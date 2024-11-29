@@ -4,7 +4,7 @@
     "title": "nf-core/sangersomatic pipeline parameters",
     "description": "Use Caveman and Pindel to call somatic mutations",
     "type": "object",
-    "$defs": {
+    "$definitions": {
         "input_output_options": {
             "title": "Input/output options",
             "type": "object",
@@ -17,8 +17,8 @@
                     "format": "file-path",
                     "exists": true,
                     "schema": "assets/schema_input.json",
-                    "mimetype": "text/csv",
-                    "pattern": "^\\S+\\.csv$",
+                    "mimetype": "text/csv/tsv",
+                    "pattern": ["^\\S+\\.csv$", "^\\S+\\.tsv$"],
                     "description": "Path to comma-separated file containing information about the samples in the experiment.",
                     "help_text": "You will need to create a design file with information about the samples in your experiment before running the pipeline. Use this parameter to specify its location. It has to be a comma-separated file with 3 columns, and a header row. See [usage docs](https://nf-co.re/sangersomatic/usage#samplesheet-input).",
                     "fa_icon": "fas fa-file-csv"
@@ -35,11 +35,112 @@
                     "fa_icon": "fas fa-envelope",
                     "help_text": "Set this parameter to your e-mail address to get a summary e-mail with details of the run sent to you when the workflow exits. If set in your user config file (`~/.nextflow/config`) then you don't need to specify this on the command line for every run.",
                     "pattern": "^([a-zA-Z0-9_\\-\\.]+)@([a-zA-Z0-9_\\-\\.]+)\\.([a-zA-Z]{2,5})$"
-                },
-                "multiqc_title": {
+                }
+            }
+        },
+        "pipeline_options": {
+            "title": "Options specific to this pipeline",
+            "type": "object",
+            "fa_icon": "fas fa-terminal",
+            "required": ["max_read_counts"],
+            "properties": {
+                "sequencing_type": {
                     "type": "string",
-                    "description": "MultiQC report title. Printed as page header, used for filename if not otherwise specified.",
-                    "fa_icon": "fas fa-file-signature"
+                    "description": "sequencing protocol",
+                    "enum": ["WGS", "WXS"],
+                    "default": "WGS"
+                },
+                "species": {
+                    "type": "string",
+                    "description": "species name (eg Human) to input into caveman, required if bam file does not contain AS (Genome assembly identifier) and SP (Species) information to input into caveman estep",
+                    "default": null
+                },
+                "species_assembly": {
+                    "type": "string",
+                    "description": "species assembly (eg Human) to input into caveman, required if bam file does not contain AS (Genome assembly identifier) and SP (Species) information to input into caveman estep",
+                    "default": null
+                }
+            }
+        },
+        "caveman_options": {
+            "title": "Options specific to caveman subworkflow",
+            "type": "object",
+            "fa_icon": "fas fa-terminal",
+            "required": ["max_read_counts"],
+            "properties": {
+                "max_read_counts": {
+                    "type": "integer",
+                    "description": "maximum read counts to input into caveman",
+                    "default": 500000
+                },
+                "normal_contamination": {
+                    "type": "number",
+                    "description": "match normal contamination in the sample/tumour to input into caveman estep",
+                    "default": 0.1
+                },
+                "normal_cn": {
+                    "type": "number",
+                    "description": "copy number to use when filling gaps in the normal copy number file (see assets/schema_input.json)  to input into caveman estep",
+                    "default": 2
+                },
+                "tumour_cn": {
+                    "type": "number",
+                    "description": "copy number to use when filling gaps in the tumour/samples copy number file (see assets/schema_input.json)  to input into caveman estep",
+                    "default": 5
+                },
+                "species": {
+                    "type": "string",
+                    "description": "species name (eg Human) to input into caveman, required if bam file does not contain AS (Genome assembly identifier) and SP (Species) information to input into caveman estep",
+                    "default": null
+                },
+                "species_assembly": {
+                    "type": "string",
+                    "description": "species assembly (eg Human) to input into caveman, required if bam file does not contain AS (Genome assembly identifier) and SP (Species) information to input into caveman estep",
+                    "default": null
+                },
+                "normal_protocol": {
+                    "type": "string",
+                    "description": "normal sequencing protocol to input into caveman estep, (caveman: Ideally this should match tumour_protocol but not checked)",
+                    "enum": ["WGS", "WXS", "RNA"],
+                    "default": "WGS"
+                },
+                "tumour_protocol": {
+                    "type": "string",
+                    "description": "tumour/sample sequencing protocol to input into caveman estep, (caveman: Ideally this should match tumour_protocol but not checked)",
+                    "enum": ["WGS", "WXS", "RNA"],
+                    "default": "WGS"
+                },
+                "prior_mut_probability": {
+                    "type": "number",
+                    "description": "Prior somatic probability  to input into caveman estep",
+                    "default": 0.000006
+                },
+                "prior_snp_probability": {
+                    "type": "number",
+                    "description": "Prior germline mutant probability to input into caveman estep",
+                    "default": 0.0001
+                }
+            }
+        },
+        "pindel_options": {
+            "title": "Options specific to pindel subworkflow",
+            "type": "object",
+            "fa_icon": "fas fa-terminal",
+            "properties": {
+                "pindel_ncpus": {
+                    "type": "integer",
+                    "description": "number of threads that pindel can use, default depending on the profile/config (4 for test, 8 for sanger_lsf)",
+                    "default": null
+                },
+                "bamtobw_threads": {
+                    "type": "integer",
+                    "description": "number of threads that 'bamToBw.pl -p bamToBw' can use",
+                    "default": null
+                },
+                "vafaugment_exonerate_mb": {
+                    "type": "number",
+                    "description": "Max memory to alow Exonerate to use (indel) [default: 6000] (part of cgpVaf.pl --augment command in pindel subworkflow)",
+                    "default": null
                 }
             }
         },
@@ -51,7 +152,7 @@
             "properties": {
                 "genome": {
                     "type": "string",
-                    "description": "Name of iGenomes reference.",
+                    "description": "Name of iGenomes/custom genome reference.",
                     "fa_icon": "fas fa-book",
                     "help_text": "If using a reference genome configured in the pipeline using iGenomes, use this parameter to give the ID for the reference. This is then used to build the full paths for all required reference genome files e.g. `--genome GRCh38`. \n\nSee the [nf-core website docs](https://nf-co.re/usage/reference_genomes) for more details."
                 },
@@ -62,7 +163,7 @@
                     "mimetype": "text/plain",
                     "pattern": "^\\S+\\.fn?a(sta)?(\\.gz)?$",
                     "description": "Path to FASTA genome file.",
-                    "help_text": "This parameter is *mandatory* if `--genome` is not specified. If you don't have a BWA index available this will be generated for you automatically. Combine with `--save_reference` to save BWA index for future runs.",
+                    "help_text": "This parameter is *mandatory* if `--genome` is not specified.",
                     "fa_icon": "far fa-file-code"
                 },
                 "igenomes_ignore": {
@@ -79,6 +180,203 @@
                     "fa_icon": "fas fa-ban",
                     "hidden": true,
                     "default": "s3://ngi-igenomes/igenomes/"
+                },
+                "custom_genome_base": {
+                    "type": "string",
+                    "format": "directory-path",
+                    "description": "The base path to the custom genome reference files",
+                    "fa_icon": "fas fa-ban",
+                    "hidden": true,
+                    "default": "${projectDir}/data/custom_reference_genomes"
+                },
+                "fai": {
+                    "type": "string",
+                    "format": "file-path",
+                    "exists": true,
+                    "mimetype": "text/plain",
+                    "description": "Path to FASTA genome index (fa.fai) file.",
+                    "help_text": "This parameter is *mandatory* if `--genome` and `--custom_genome` is not specified.",
+                    "fa_icon": "far fa-file-code"
+                },
+                "hidepth": {
+                    "type": "string",
+                    "format": "file-path",
+                    "exists": true,
+                    "mimetype": "text/plain",
+                    "description": "Path to high depth region",
+                    "help_text": "This parameter is *mandatory* if `--genome` is not specified.",
+                    "fa_icon": "far fa-file-code"
+                },
+                "hidepth_tbi": {
+                    "type": "string",
+                    "format": "file-path",
+                    "exists": true,
+                    "mimetype": "text/plain",
+                    "description": "Path to high depth region index (bed.tbi)",
+                    "help_text": "This parameter is *mandatory* if `--genome` is not specified.",
+                    "fa_icon": "far fa-file-code"
+                },
+                "genome_gap": {
+                    "type": "string",
+                    "format": "file-path",
+                    "exists": true,
+                    "mimetype": "text/plain",
+                    "description": "Path to genome gap tab delimited file (genome.gap.tab)",
+                    "help_text": "This parameter is *mandatory* if `--genome` is not specified.",
+                    "fa_icon": "far fa-file-code"
+                },
+                "caveman_ignore_contigs": {
+                    "type": "string",
+                    "format": "file-path",
+                    "exists": true,
+                    "mimetype": "text/plain",
+                    "description": "Path to the ignore contig file specific for caveman",
+                    "help_text": "This parameter is *mandatory* if `--genome` is not specified.",
+                    "fa_icon": "far fa-file-code"
+                },
+                "simrep": {
+                    "type": "string",
+                    "format": "file-path",
+                    "exists": true,
+                    "mimetype": "text/plain",
+                    "description": "Path to tabix indexed simple/satellite repeats",
+                    "help_text": "This parameter is *mandatory* if `--genome` is not specified.",
+                    "fa_icon": "far fa-file-code"
+                },
+                "simrep_tbi": {
+                    "type": "string",
+                    "format": "file-path",
+                    "exists": true,
+                    "mimetype": "text/plain",
+                    "description": "Path to tabix index file for the simple/satellite repeats",
+                    "help_text": "This parameter is *mandatory* if `--genome` is not specified.",
+                    "fa_icon": "far fa-file-code"
+                },
+                "pindel_unmatch_panel": {
+                    "type": "string",
+                    "format": "file-path",
+                    "exists": true,
+                    "mimetype": "text/plain",
+                    "description": "Path to tabix indexed gff3 or bed of unmatched normal panel (see also pindel_np_from_vcf.pl)",
+                    "help_text": "This parameter is *mandatory* if `--genome` is not specified.",
+                    "fa_icon": "far fa-file-code"
+                },
+                "pindel_unmatch_panel_tbi": {
+                    "type": "string",
+                    "format": "file-path",
+                    "exists": true,
+                    "mimetype": "text/plain",
+                    "description": "Path to index for tabix indexed gff3 or bed of unmatched normal panel (see also pindel_np_from_vcf.pl)",
+                    "help_text": "This parameter is *mandatory* if `--genome` is not specified.",
+                    "fa_icon": "far fa-file-code"
+                },
+                "pindel_bad_loci": {
+                    "type": "string",
+                    "format": "file-path",
+                    "exists": true,
+                    "mimetype": "text/plain",
+                    "description": "Tabix indexed BED file of locations to not accept as anchors",
+                    "help_text": "This parameter is *mandatory* if `--genome` is not specified.",
+                    "fa_icon": "far fa-file-code"
+                },
+                "pindel_bad_loci_tbi": {
+                    "type": "string",
+                    "format": "file-path",
+                    "exists": true,
+                    "mimetype": "text/plain",
+                    "description": "Tabix file of for locations to not accept as anchors",
+                    "help_text": "This parameter is *mandatory* if `--genome` is not specified.",
+                    "fa_icon": "far fa-file-code"
+                },
+                "pindel_filter_rules": {
+                    "type": "string",
+                    "format": "file-path",
+                    "exists": true,
+                    "mimetype": "text/plain",
+                    "description": "VCF filter rules file (see FlagVcf.pl for details)",
+                    "help_text": "This parameter is *mandatory* if `--genome` is not specified.",
+                    "fa_icon": "far fa-file-code"
+                },
+                "pindel_soft_filter_rules": {
+                    "type": "string",
+                    "format": "file-path",
+                    "exists": true,
+                    "mimetype": "text/plain",
+                    "description": "Filter rules to be indicated in INFO field as soft flags",
+                    "help_text": "This parameter is *mandatory* if `--genome` is not specified.",
+                    "fa_icon": "far fa-file-code"
+                },
+                "genes": {
+                    "type": "string",
+                    "format": "file-path",
+                    "exists": true,
+                    "mimetype": "text/plain",
+                    "description": "Tabix indexed coding gene footprints",
+                    "help_text": "This parameter is *mandatory* if `--genome` is not specified.",
+                    "fa_icon": "far fa-file-code"
+                },
+                "genes_tbi": {
+                    "type": "string",
+                    "format": "file-path",
+                    "exists": true,
+                    "mimetype": "text/plain",
+                    "description": "Tabix file for coding gene footprints",
+                    "help_text": "This parameter is *mandatory* if `--genome` is not specified.",
+                    "fa_icon": "far fa-file-code"
+                },
+                "pindel_exclude": {
+                    "type": "string",
+                    "format": "file-path",
+                    "exists": true,
+                    "mimetype": "text/plain",
+                    "description": "Tabix indexed coding gene footprints",
+                    "help_text": "Exclude this list of ref sequences from processing",
+                    "fa_icon": "far fa-file-code"
+                },
+                "vagrent_dir": {
+                    "type": "string",
+                    "format": "directory-path",
+                    "exists": true,
+                    "mimetype": "text/plain",
+                    "description": "vagrent directory - should contain a vagrent cache file",
+                    "help_text": "Exclude this list of ref sequences from processing",
+                    "fa_icon": "far fa-file-code"
+                },
+                "caveman_flag_bed_dir": {
+                    "type": "string",
+                    "format": "directory-path",
+                    "exists": true,
+                    "mimetype": "text/plain",
+                    "description": "directory to bed files to flag caveman output",
+                    "help_text": "Exclude this list of ref sequences from processing",
+                    "fa_icon": "far fa-file-code"
+                },
+                "caveman_flag_config": {
+                    "type": "string",
+                    "format": "file-path",
+                    "exists": true,
+                    "mimetype": "text/plain",
+                    "description": "caveman flag config",
+                    "help_text": "Exclude this list of ref sequences from processing",
+                    "fa_icon": "far fa-file-code"
+                },
+                "caveman_flag_to_vcf_config": {
+                    "type": "string",
+                    "format": "file-path",
+                    "exists": true,
+                    "mimetype": "text/plain",
+                    "description": "caveman flag to vcf config",
+                    "help_text": "Exclude this list of ref sequences from processing",
+                    "fa_icon": "far fa-file-code"
+                },
+                "caveman_unmatch_dir": {
+                    "type": "string",
+                    "format": "directory-path",
+                    "exists": true,
+                    "mimetype": "text/plain",
+                    "description": "directory to caveman unmatch panel",
+                    "help_text": "Exclude this list of ref sequences from processing",
+                    "fa_icon": "far fa-file-code"
                 }
             }
         },
@@ -224,16 +522,26 @@
     },
     "allOf": [
         {
-            "$ref": "#/$defs/input_output_options"
+            "$ref": "#/$definitions/input_output_options"
         },
         {
-            "$ref": "#/$defs/reference_genome_options"
+            "$ref": "#/$definitions/reference_genome_options"
         },
         {
-            "$ref": "#/$defs/institutional_config_options"
+            "$ref": "#/$definitions/institutional_config_options"
         },
         {
-            "$ref": "#/$defs/generic_options"
+            "$ref": "#/$definitions/generic_options"
+        },
+        {
+            "$ref": "#/$definitions/pindel_options"
+        },
+        {
+            "$ref": "#/$definitions/caveman_options"
+        },
+        {
+            "$ref": "#/$definitions/pindel_options"
         }
+
     ]
 }
