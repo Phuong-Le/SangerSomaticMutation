@@ -44,7 +44,10 @@ workflow CAVEMAN {
         .flatten()
 
     cavemanSplit(
-        genome_index.combine(cavemanSetup.out),
+        genome_index.combine(
+            ch_samplesheet
+            .join(cavemanSetup.out)
+        ),
         max_read_counts,
         fasta,
         filterGenomeIndex.out,
@@ -53,25 +56,28 @@ workflow CAVEMAN {
 
     cavemanSplitConcat(
         cavemanSplit.out
-        .map{ it -> tuple(it[1], it[10], it[11]) }
+        .map{ index, meta, readpos, splitlist -> tuple(meta, readpos, splitlist) }
         .groupTuple( by: 0 ),
         filterGenomeIndex.out
     )
 
-    // split index should be the same for all meta's (ie sample_id)
-    def splitindex = 1
     splitlist_ch = cavemanSplitConcat.out
-        .first()
-        .map{ meta, readpos, splitlist -> splitlist }
-        .splitCsv(header: false, sep: '\t')
-        .map { it -> [splitindex++, it[0]] }
+        .flatMap{ meta, readpos, splitlist ->
+            splitlist
+            .splitCsv(header:['chrom', 'starts', 'ends'], sep: '\t')
+            .withIndex(1)*.reverse()
+            .collect{
+                tuple(meta, *it, readpos.find{ filename ->  filename.name =~ /readpos\.${it[1].chrom}$/ }, splitlist )
+            }
+        }
 
     cavemanMstep(
         splitlist_ch
         .combine(
-            cavemanSetup.out
-            .join(cavemanSplitConcat.out)
-        ),
+            ch_samplesheet
+            .join(cavemanSetup.out),
+            by:0
+            ),
         fasta,
         filterGenomeIndex.out,
         genome_gap
@@ -89,8 +95,18 @@ workflow CAVEMAN {
     cavemanEstep(
         splitlist_ch
         .combine(
-            cavemanMergeMstep.out
-        ),
+            ch_samplesheet
+            .join(
+                cavemanSetup.out
+                .join(cavemanMergeMstep.out)),
+            by:0
+        )
+        .map {
+            meta, index, splitlist_entry, readpos, splitlist, bam, bai, bam_match, bai_match, sample_cn_file, match_cn_file, alg_bean, caveman_config, covs_arr, probs_arr, mstep_all
+            -> tuple(
+                meta, index, splitlist_entry, readpos, splitlist, bam, bai, bam_match, bai_match, sample_cn_file, match_cn_file, alg_bean, caveman_config, covs_arr, probs_arr, file("${mstep_all}/${splitlist_entry.chrom}/${splitlist_entry.starts}_${splitlist_entry.ends}.covs")
+            )
+        },
         fasta,
         filterGenomeIndex.out,
         genome_gap,

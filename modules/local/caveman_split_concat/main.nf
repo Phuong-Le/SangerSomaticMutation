@@ -1,5 +1,7 @@
 process cavemanSplitConcat {
-    publishDir "${params.outdir}/${meta.sample_id}"
+    label 'process_tiny'
+
+    publishDir "${params.outdir}/caveman_out/${meta.sample_id}", pattern: 'splitList', mode: params.publish_dir_mode
 
     input:
     tuple val(meta), path(readpos), path(splitlist)
@@ -11,5 +13,6 @@ process cavemanSplitConcat {
     script:
     """
     caveman_split_concat.sh
+    rm -f ${splitlist} ${filter_genome_index}
     """
 }

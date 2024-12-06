@@ -1,8 +1,9 @@
 process cavemanEstep {
     label 'caveman'
+    label 'process_single'
 
     input:
-    tuple val(index), val(splitlist_entry), val(meta), path('covs_arr'), path('probs_arr'), path('mstep_out_all'), path(bam), path(bai), path(bam_match), path(bai_match), path(sample_cn_file), path(match_cn_file), path(alg_bean), path(caveman_config), path(readpos), path(splitlist)
+    tuple val(meta), val(index), val(splitlist_entry), path(readpos), path(splitlist), path(bam), path(bai), path(bam_match), path(bai_match), path(sample_cn_file, stageAs: 'sample.cn.bed'), path(match_cn_file, stageAs: 'match.cn.bed'), path(alg_bean), path(caveman_config), path(covs_arr), path(probs_arr), path(covs)
     path fasta
     path filtered_fai
     path genome_gap
@@ -21,10 +22,12 @@ process cavemanEstep {
 
     script:
     """
-    mkdir ${splitlist_entry}
-    ln -s mstep_out_all/${splitlist_entry}/* ${splitlist_entry}
+    mkdir -p ${splitlist_entry.chrom}
+    mv ${covs} ${splitlist_entry.chrom}
     caveman estep -i ${index} --config-file ${caveman_config} --normal-contamination ${normal_contamination} --species ${species} --species-assembly ${species_assembly} --normal-protocol ${normal_protocol} --tumour-protocol ${tumour_protocol} --normal-copy-number ${normal_cn} --tumour-copy-number ${tumour_cn} --prior-mut-probability ${prior_mut_probability} --prior-snp-probability ${prior_snp_probability}
-    mkdir estep_out
-    mv ${splitlist_entry} estep_out
+    mkdir -p estep_out
+    mv ${splitlist_entry.chrom} estep_out
+
+    rm -f ${readpos} ${splitlist} ${bam} ${bai} ${bam_match} ${bai_match} ${sample_cn_file} ${match_cn_file} ${alg_bean} ${caveman_config} ${covs_arr} ${probs_arr} ${fasta} ${filtered_fai} ${genome_gap}
     """
 }

@@ -42,7 +42,7 @@
             "title": "Options specific to this pipeline",
             "type": "object",
             "fa_icon": "fas fa-terminal",
-            "required": ["max_read_counts"],
+            "required": ["sequencing_type", "species", "species_assembly", "max_read_counts"],
             "properties": {
                 "sequencing_type": {
                     "type": "string",
@@ -52,13 +52,20 @@
                 },
                 "species": {
                     "type": "string",
-                    "description": "species name (eg Human) to input into caveman, required if bam file does not contain AS (Genome assembly identifier) and SP (Species) information to input into caveman estep",
+                    "description": "species name (eg Human), required if bam file does not contain AS (Genome assembly identifier) and SP (Species) information",
                     "default": null
                 },
                 "species_assembly": {
                     "type": "string",
-                    "description": "species assembly (eg Human) to input into caveman, required if bam file does not contain AS (Genome assembly identifier) and SP (Species) information to input into caveman estep",
+                    "description": "species assembly (eg Human), required if bam file does not contain AS (Genome assembly identifier) and SP (Species) information",
                     "default": null
+                },
+                "image_cachedir": {
+                    "type": "string",
+                    "format": "directory-path",
+                    "description": "Institutional/personal singularity or apptainer image cache directory",
+                    "hidden": true,
+                    "fa_icon": "fas fa-users-cog"
                 }
             }
         },
@@ -66,7 +73,7 @@
             "title": "Options specific to caveman subworkflow",
             "type": "object",
             "fa_icon": "fas fa-terminal",
-            "required": ["max_read_counts"],
+            "required": ["max_read_counts", "normal_contamination", "normal_cn", "tumour_cn", "normal_protocol", "tumour_protocol", "prior_mut_probability", "prior_snp_probability"],
             "properties": {
                 "max_read_counts": {
                     "type": "integer",
@@ -87,16 +94,6 @@
                     "type": "number",
                     "description": "copy number to use when filling gaps in the tumour/samples copy number file (see assets/schema_input.json)  to input into caveman estep",
                     "default": 5
-                },
-                "species": {
-                    "type": "string",
-                    "description": "species name (eg Human) to input into caveman, required if bam file does not contain AS (Genome assembly identifier) and SP (Species) information to input into caveman estep",
-                    "default": null
-                },
-                "species_assembly": {
-                    "type": "string",
-                    "description": "species assembly (eg Human) to input into caveman, required if bam file does not contain AS (Genome assembly identifier) and SP (Species) information to input into caveman estep",
-                    "default": null
                 },
                 "normal_protocol": {
                     "type": "string",
@@ -119,28 +116,6 @@
                     "type": "number",
                     "description": "Prior germline mutant probability to input into caveman estep",
                     "default": 0.0001
-                }
-            }
-        },
-        "pindel_options": {
-            "title": "Options specific to pindel subworkflow",
-            "type": "object",
-            "fa_icon": "fas fa-terminal",
-            "properties": {
-                "pindel_ncpus": {
-                    "type": "integer",
-                    "description": "number of threads that pindel can use, default depending on the profile/config (4 for test, 8 for sanger_lsf)",
-                    "default": null
-                },
-                "bamtobw_threads": {
-                    "type": "integer",
-                    "description": "number of threads that 'bamToBw.pl -p bamToBw' can use",
-                    "default": null
-                },
-                "vafaugment_exonerate_mb": {
-                    "type": "number",
-                    "description": "Max memory to alow Exonerate to use (indel) [default: 6000] (part of cgpVaf.pl --augment command in pindel subworkflow)",
-                    "default": null
                 }
             }
         },
@@ -534,13 +509,7 @@
             "$ref": "#/$definitions/generic_options"
         },
         {
-            "$ref": "#/$definitions/pindel_options"
-        },
-        {
             "$ref": "#/$definitions/caveman_options"
-        },
-        {
-            "$ref": "#/$definitions/pindel_options"
         }
 
     ]

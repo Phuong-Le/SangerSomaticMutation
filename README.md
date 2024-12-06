@@ -19,7 +19,7 @@
 
 ## Introduction
 
-**nf-core/sangersomatic** is a bioinformatics pipeline that ...
+**nf-core/sangersomatic** is a bioinformatics pipeline that calls somatic mutations from bam files, using CaVEMan to call SNVs and Pindel to call Indels
 
 <!-- TODO nf-core:
    Complete this sentence with a 2-3 sentence summary of what types of data the pipeline ingests, a brief overview of the
@@ -31,8 +31,22 @@
      workflows use the "tube map" design for that. See https://nf-co.re/docs/contributing/design_guidelines#examples for examples.   -->
 <!-- TODO nf-core: Fill in short bullet-pointed list of the default steps in the pipeline -->
 
-1. Read QC ([`FastQC`](https://www.bioinformatics.babraham.ac.uk/projects/fastqc/))
-2. Present QC for raw reads ([`MultiQC`](http://multiqc.info/))
+1. Run CaVEMan, an EM-based algorithm to call SNVs somatic mutations, including:
+  - setup: sets up configuration for subsequent steps
+  - split: splits the input bam file into chunks, each task do this per line in the input genome index file (eg genome.fa.fai)
+  - split concat: concatenate results from the above different split jobs, outputs a single `splitFile` for subsequent steps
+  - Mstep: maximisation step, each task do this per line in the `splitFile`
+  - Merge Mstep: concatenate results from the above different Mstep jobs, outputs a single `covs_array` file and a `probs_array` file  for subsequent steps
+  - Estep: expectation step, each task do this per line in the `splitFile`
+  - Merge Estep: concatenate results from the above different split jobs, outputs a single `muts.no_ids.vcf` file for somatics mutations, a single `snps.no_ids.vcf` file for SNPs (germline), a single `bed.gz` and its index file `bed.gz.tbi`
+  - Add IDS: add ids to the above `no_ids.vcf` files, bgzip and tabix index them to obtain a `muts.vcf.gz` file, a `muts.vcf.gz.tbi` file, a `snps.vcf.gz` file and a `snps.vcf.gz.tbi` file.
+
+2. Run [Pindel](https://github.com/genome/pindel), including:
+  - Pindel itself through [cgpPindel](https://github.com/cancerit/cgpPindel) to call Indels, this also outputs a `germline.bed.gz` file and its tabix index file `germline.bed.gz` for the downstream cgpCaVEManPostProcessing step
+  - Add some [vafCorrect](https://github.com/cancerit/vafCorrect) flags to the VCF files
+  - Flagging of the output VCF files with [VAGrENT](https://github.com/cancerit/VAGrENT)
+
+3. Run [cgpCaVEManPostProcessing](https://github.com/cancerit/cgpCaVEManPostProcessing)
 
 ## Usage
 

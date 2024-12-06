@@ -22,12 +22,9 @@ workflow PINDEL {
     species
     species_assembly
     sequencing_type
-    pindel_ncpus
     pindel_exclude
-    bamtobw_threads
     hidepth
     hidepth_tbi
-    vafaugment_exonerate_mb
     vagrent_dir
 
     main:
@@ -49,27 +46,23 @@ workflow PINDEL {
         species,
         species_assembly,
         sequencing_type,
-        pindel_ncpus,
         pindel_exclude
     )
 
-    // cgpPindel.out.bams.view()
 
-    cgpBigWigSample(
-        cgpPindel.out.bams
-        .map { meta, mt_bam, mt_bai, wt_bam, wt_bai -> tuple(meta, mt_bam, mt_bai) },
-        fasta,
-        fai,
-        bamtobw_threads
-    )
+    // cgpBigWigSample(
+    //     cgpPindel.out.bams
+    //     .map { meta, mt_bam, mt_bai, wt_bam, wt_bai -> tuple(meta, mt_bam, mt_bai) },
+    //     fasta,
+    //     fai
+    // )
 
-    cgpBigWigMatch(
-        cgpPindel.out.bams
-        .map { meta, mt_bam, mt_bai, wt_bam, wt_bai -> tuple(meta, wt_bam, wt_bai) },
-        fasta,
-        fai,
-        bamtobw_threads
-    )
+    // cgpBigWigMatch(
+    //     cgpPindel.out.bams
+    //     .map { meta, mt_bam, mt_bai, wt_bam, wt_bai -> tuple(meta, wt_bam, wt_bai) },
+    //     fasta,
+    //     fai
+    // )
 
     vafAugment(
         ch_samplesheet
@@ -77,8 +70,7 @@ workflow PINDEL {
         fasta,
         fai,
         hidepth,
-        hidepth_tbi,
-        vafaugment_exonerate_mb
+        hidepth_tbi
     )
 
     pindelVagrent(

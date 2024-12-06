@@ -1,3 +1,4 @@
+#!/usr/bin/env bash
 
 touch splitList
 
@@ -6,3 +7,5 @@ while read p; do
     echo $suffix
     cat "splitList.${suffix}" >> splitList
 done <genome.fa.fai
+
+

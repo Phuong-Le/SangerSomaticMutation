@@ -87,12 +87,9 @@ workflow NFCORE_SANGERSOMATIC {
     genes
     genes_tbi
     sequencing_type
-    pindel_ncpus
     pindel_exclude
-    bamtobw_threads
     hidepth
     hidepth_tbi
-    vafaugment_exonerate_mb
     vagrent_dir
     caveman_flag_bed_dir
     caveman_flag_config
@@ -100,6 +97,8 @@ workflow NFCORE_SANGERSOMATIC {
     caveman_unmatch_dir
 
     main:
+
+    println(pindel_unmatch_panel)
 
     //
     // WORKFLOW: Run pipeline
@@ -132,12 +131,9 @@ workflow NFCORE_SANGERSOMATIC {
         genes,
         genes_tbi,
         sequencing_type,
-        pindel_ncpus,
         pindel_exclude,
-        bamtobw_threads,
         hidepth,
         hidepth_tbi,
-        vafaugment_exonerate_mb,
         vagrent_dir,
         caveman_flag_bed_dir,
         caveman_flag_config,
@@ -198,12 +194,9 @@ workflow {
         params.genes,
         params.genes_tbi,
         params.sequencing_type,
-        params.pindel_ncpus,
         params.pindel_exclude,
-        params.bamtobw_threads,
         params.hidepth,
         params.hidepth_tbi,
-        params.vafaugment_exonerate_mb,
         params.vagrent_dir,
         params.caveman_flag_bed_dir,
         params.caveman_flag_config,

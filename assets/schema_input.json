@@ -58,6 +58,6 @@
                 "description": "copy number bed file for the <match_normal_id> sample"
             }
         },
-        "required": ["sample_id", "match_normal_id", "bam", "bam_match"]
+        "required": ["sample_id", "match_normal_id", "bam", "bai", "bam_match", "bai_match", "sample_cn_file", "match_cn_file"]
     }
 }

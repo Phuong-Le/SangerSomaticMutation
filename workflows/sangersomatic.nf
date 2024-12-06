@@ -43,12 +43,9 @@ workflow SANGERSOMATIC {
     genes
     genes_tbi
     sequencing_type
-    pindel_ncpus
     pindel_exclude
-    bamtobw_threads
     hidepth
     hidepth_tbi
-    vafaugment_exonerate_mb
     vagrent_dir
     caveman_flag_bed_dir
     caveman_flag_config
@@ -92,12 +89,9 @@ workflow SANGERSOMATIC {
         species,
         species_assembly,
         sequencing_type,
-        pindel_ncpus,
         pindel_exclude,
-        bamtobw_threads,
         hidepth,
         hidepth_tbi,
-        vafaugment_exonerate_mb,
         vagrent_dir
     )
 
