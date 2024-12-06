@@ -98,8 +98,6 @@ workflow NFCORE_SANGERSOMATIC {
 
     main:
 
-    println(pindel_unmatch_panel)
-
     //
     // WORKFLOW: Run pipeline
     //

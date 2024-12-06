@@ -42,7 +42,7 @@
             "title": "Options specific to this pipeline",
             "type": "object",
             "fa_icon": "fas fa-terminal",
-            "required": ["sequencing_type", "species", "species_assembly", "max_read_counts"],
+            "required": ["sequencing_type", "species", "species_assembly"],
             "properties": {
                 "sequencing_type": {
                     "type": "string",
@@ -65,7 +65,13 @@
                     "format": "directory-path",
                     "description": "Institutional/personal singularity or apptainer image cache directory",
                     "hidden": true,
-                    "fa_icon": "fas fa-users-cog"
+                    "fa_icon": "fas fa-users-cog",
+                    "default": "$projectDir/image if a container runtime profile or is enabled or conf/container.config is loaded, eg with --profile singularity"
+                },
+                "use_custom_genome": {
+                    "type": "boolean",
+                    "description": "whether to use custom genome as specified in conf/custom_ref_genomes.config ",
+                    "default": false
                 }
             }
         },
@@ -124,12 +130,13 @@
             "type": "object",
             "fa_icon": "fas fa-dna",
             "description": "Reference genome related files and options required for the workflow.",
+            "required": ["fasta", "fai", "hidepth", "hidepth_tbi", "genome_gap", "caveman_ignore_contigs", "simrep", "simrep_tbi", "pindel_unmatch_panel", "pindel_unmatch_panel_tbi", "pindel_bad_loci", "pindel_bad_loci_tbi", "pindel_filter_rules", "pindel_soft_filter_rules", "genes", "genes_tbi", "pindel_exclude", "vagrent_dir", "caveman_flag_bed_dir", "caveman_flag_config", "caveman_flag_to_vcf_config", "caveman_unmatch_dir"],
             "properties": {
                 "genome": {
                     "type": "string",
                     "description": "Name of iGenomes/custom genome reference.",
                     "fa_icon": "fas fa-book",
-                    "help_text": "If using a reference genome configured in the pipeline using iGenomes, use this parameter to give the ID for the reference. This is then used to build the full paths for all required reference genome files e.g. `--genome GRCh38`. \n\nSee the [nf-core website docs](https://nf-co.re/usage/reference_genomes) for more details."
+                    "help_text": "If using a reference genome configured in the pipeline using use_custom_genome == true or iGenomes, use this parameter to give the ID for the reference. This is then used to build the full paths for all required reference genome files e.g. `--genome GRCh38`. \n\nSee the [nf-core website docs](https://nf-co.re/usage/reference_genomes) for more details."
                 },
                 "fasta": {
                     "type": "string",
@@ -178,7 +185,7 @@
                     "format": "file-path",
                     "exists": true,
                     "mimetype": "text/plain",
-                    "description": "Path to high depth region",
+                    "description": "Path to high depth region, used in vafAugment under PINDEL",
                     "help_text": "This parameter is *mandatory* if `--genome` is not specified.",
                     "fa_icon": "far fa-file-code"
                 },
@@ -187,7 +194,7 @@
                     "format": "file-path",
                     "exists": true,
                     "mimetype": "text/plain",
-                    "description": "Path to high depth region index (bed.tbi)",
+                    "description": "Path to high depth region index (bed.tbi), used in vafAugment under PINDEL",
                     "help_text": "This parameter is *mandatory* if `--genome` is not specified.",
                     "fa_icon": "far fa-file-code"
                 },

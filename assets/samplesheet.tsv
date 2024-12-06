@@ -1,0 +1,3 @@
+sample_id	match_normal_id	bam	bai	bam_match	bai_match	sample_cn_file	match_cn_file
+PD47151n_lo0002	PD47151b	/path/to/PD47151n_lo0002.small.bam	/path/to/PD47151n_lo0002.small.bam.bai	/path/to/PD47151b.small.bam	/path/to/PD47151b.small.bam.bai	/path/to/copynumber.bed	/path/to/copynumber.bed
+PD52103n_lo0001	PD52103b	/path/to/PD52103n_lo0001.small.bam	/path/to/PD52103n_lo0001.small.bam.bai	/lustre/scratch126/casm/team267ms/al35/repos_phd/SangerSomaticMutation/test-data/small/PD52103b.small.bam	/lustre/scratch126/casm/team267ms/al35/repos_phd/SangerSomaticMutation/test-data/small/PD52103b.small.bam.bai	/path/to/copynumber.bed	/path/to/copynumber.bed

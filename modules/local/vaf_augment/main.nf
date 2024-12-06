@@ -1,7 +1,7 @@
 process vafAugment {
     label 'process_low'
 
-    publishDir "${params.outdir}/pindel_out/${meta.sample_id}", pattern: '*.flagged.vafaugment.vcf.gz*', mode: params.publish_dir_mode
+    publishDir "${params.outdir}/pindel_out/${meta.sample_id}", pattern: "*.flagged.vafaugment.vcf.gz*", mode: params.publish_dir_mode
 
     input:
     tuple val(meta), path(bam), path(bai), path(bam_match), path(bai_match), path(vcf), path(vcf_tbi)
