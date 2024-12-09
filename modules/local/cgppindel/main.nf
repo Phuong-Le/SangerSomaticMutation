@@ -3,6 +3,7 @@ process cgpPindel {
 
     publishDir "${params.outdir}/pindel_out/${meta.sample_id}", pattern: '*.germline.bed.*', mode: params.publish_dir_mode
     publishDir "${params.outdir}/pindel_out/${meta.sample_id}", pattern: '*.bam*', mode: params.publish_dir_mode
+    publishDir "${params.outdir}/pindel_out/${meta.sample_id}", pattern: '*.vcf*', mode: params.publish_dir_mode
 
     input:
     tuple val(meta), path(bam), path(bai), path(bam_match), path(bai_match)

@@ -48,6 +48,14 @@ The pipeline is built using [Nextflow](https://www.nextflow.io/) and processes d
     - `${sample_id}_vs_${match_normal_id}_wt.bam.bai`: bam index file for `match_normal_id`
     - `${sample_id}_vs_${match_normal_id}.germline.bed.gz`: bed file for germline mutation, this will be used to flag caveman output
     - `${sample_id}_vs_${match_normal_id}.germline.bed.gz.tbi`: index file for bed file for germline mutation, this will be used to flag caveman output
+    - `${sample_id}_vs_${match_normal_id}.flagged.vcf.gz`: vcf file after running cgpPindel
+    - `${sample_id}_vs_${match_normal_id}.flagged.vcf.gz.tbi`: index file for the vcf file after running cgpPindel
+    - `${sample_id}_vs_${match_normal_id}.flagged.vafaugment.vcf.gz`: vcf file after vaf augmented (added VAF related flags)
+    - `${sample_id}_vs_${match_normal_id}.flagged.vafaugment.vcf.gz.tbi`: index file for the vcf file after vaf augmented (added VAF related flags)
+    - `${sample_id}_vs_${match_normal_id}.pindel.annot.flagged.vaf.vcf.gz`: vcf file after vaf augmented (added VAF related flags) and annotated with vagrent
+    - `${sample_id}_vs_${match_normal_id}.pindel.annot.flagged.vaf.vcf.gz.tbi`: index file for the vcf file after vaf augmented (added VAF related flags) and annotated with vagrent
+
+
 
 ### caveman_flagging_out
 

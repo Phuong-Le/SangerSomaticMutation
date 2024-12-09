@@ -2,7 +2,7 @@ process pindelVagrent {
     label 'vagrent'
     label 'process_low'
 
-    publishDir "${params.outdir}/pindel_out/${meta.sample_id}", pattern: "*.pindel.annot.flagged.vaf.vcf.gz*", mode: params.publish_dir_mode
+    publishDir "${params.outdir}/pindel_out/${meta.sample_id}", mode: params.publish_dir_mode
 
     input:
     tuple val(meta), path(vcf), path(vcf_tbi)
