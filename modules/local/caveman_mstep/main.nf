@@ -13,8 +13,9 @@ process cavemanMstep {
 
     script:
     """
-    caveman mstep --index ${index} --config-file ${caveman_config}
+    rm -rf mstep_out
     mkdir mstep_out
+    caveman mstep --index ${index} --config-file ${caveman_config}
     mv ${splitlist_entry.chrom} mstep_out
     rm -f ${readpos} ${splitlist} ${bam} ${bai} ${bam_match} ${bai_match} ${sample_cn_file} ${match_cn_file} ${fasta} ${filtered_fai} ${genome_gap}
     """

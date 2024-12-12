@@ -13,9 +13,10 @@ process cavemanMergeMstep {
 
     script:
     """
+    rm -rf mstep_all
     mkdir mstep_all
     cp -R mstep_out*/* mstep_all
-    ln -s mstep_all/* .
+    ln -sf mstep_all/* .
     caveman merge -f ${caveman_config}
 
     caveman_merge_mstep_cleanup.sh

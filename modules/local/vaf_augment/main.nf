@@ -19,10 +19,10 @@ process vafAugment {
     """
     cgpVaf.pl --augment -restrict_flag 1 --high_depth_bed ${hidepth} --vcf ${vcf} --output_vcfExtension .vafaugment.vcf --inputDir . --outDir ./vaf_out --variant_type indel --genome ${fasta} --tumour_name ${meta.sample_id} --normal_name ${meta.match_normal_id} --tumour_bam ${bam} --normal_bam ${bam_match} --exonerate_mb ${task.memory}
     mv vaf_out/${meta.sample_id}_vs_${meta.match_normal_id}.flagged.vafaugment.vcf.gz .
-    mv vaf_out${meta.sample_id}_vs_${meta.match_normal_id}.flagged.vafaugment.vcf.gz.tbi .
+    mv vaf_out/${meta.sample_id}_vs_${meta.match_normal_id}.flagged.vafaugment.vcf.gz.tbi .
 
     rm -f ${bam} ${bai} ${bam_match} ${bai_match} ${vcf} ${vcf_tbi} ${fasta} ${fai} ${hidepth} ${hidepth_tbi}
-    rm -rf ${vaf_out}
+    rm -rf vaf_out
     """
 
 }

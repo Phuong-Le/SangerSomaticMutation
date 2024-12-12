@@ -17,6 +17,7 @@ process cavemanMergeEstep {
     bedgz = "${meta.sample_id}_vs_${meta.match_normal_id}.caveman.no_analysis.bed.gz"
     bedgz_tbi = "${meta.sample_id}_vs_${meta.match_normal_id}.caveman.no_analysis.bed.gz.tbi"
     """
+    rm -rf estep_all
     mkdir estep_all
     cp -R estep_out*/* estep_all
     mergeCavemanResults --splitList ${splitlist} -o ${mutvcf} -f estep_all/%/%.muts.vcf.gz

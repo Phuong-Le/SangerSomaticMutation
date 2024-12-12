@@ -153,6 +153,7 @@
                     "description": "Do not load the iGenomes reference config.",
                     "fa_icon": "fas fa-ban",
                     "hidden": true,
+                    "default": true,
                     "help_text": "Do not load `igenomes.config` when running the pipeline. You may choose this option if you observe clashes between custom parameters and those supplied in `igenomes.config`."
                 },
                 "igenomes_base": {
@@ -169,7 +170,7 @@
                     "description": "The base path to the custom genome reference files",
                     "fa_icon": "fas fa-ban",
                     "hidden": true,
-                    "default": "${projectDir}/data/custom_reference_genomes"
+                    "default": null
                 },
                 "fai": {
                     "type": "string",
@@ -516,8 +517,10 @@
             "$ref": "#/$definitions/generic_options"
         },
         {
+            "$ref": "#/$definitions/pipeline_options"
+        },
+        {
             "$ref": "#/$definitions/caveman_options"
         }
-
     ]
 }

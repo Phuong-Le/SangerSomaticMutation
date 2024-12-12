@@ -5,12 +5,12 @@
 
 ## Samplesheet input
 
-The input sample sheet should be either in a tab delimited format (extension must be .tsv), or comma delimited format (extension must be .csv), like [samplesheet.tsv](assets/samplesheet.tsv). Your input should contain the following columns (column names must be accurate but no need to be in this order, redundant columns will be ignored)
+The input sample sheet should be either in a tab delimited format (extension must be .tsv), or comma delimited format (extension must be .csv), like [samplesheet.tsv](../assets/samplesheet.tsv). Your input should contain the following columns (column names must be accurate but no need to be in this order, redundant columns will be ignored)
 
 ```tsv title="samplesheet.tsv"
 sample_id	match_normal_id	bam	bai	bam_match	bai_match	sample_cn_file	match_cn_file
 PD47151n_lo0002	PD47151b	/path/to/PD47151n_lo0002.small.bam	/path/to/PD47151n_lo0002.small.bam.bai	/path/to/PD47151b.small.bam	/path/to/PD47151b.small.bam.bai	/path/to/copynumber.bed	/path/to/copynumber.bed
-PD52103n_lo0001	PD52103b	/path/to/PD52103n_lo0001.small.bam	/path/to/PD52103n_lo0001.small.bam.bai	/lustre/scratch126/casm/team267ms/al35/repos_phd/SangerSomaticMutation/test-data/small/PD52103b.small.bam	/lustre/scratch126/casm/team267ms/al35/repos_phd/SangerSomaticMutation/test-data/small/PD52103b.small.bam.bai	/path/to/copynumber.bed	/path/to/copynumber.bed
+PD52103n_lo0001	PD52103b	/path/to/PD52103n_lo0001.small.bam	/path/to/PD52103n_lo0001.small.bam.bai	/path/to/PD52103b.small.bam	/path/to/PD52103b.small.bam.bai	/path/to/copynumber.bed	/path/to/copynumber.bed
 ```
 
 ```bash
@@ -76,7 +76,7 @@ PD52103n_lo0001	PD52103b	/path/to/PD52103n_lo0001.small.bam	/path/to/PD52103n_lo
 | `genome` | type: string, If using a reference genome configured in the pipeline using `--use_custom_genome true` (ie `conf/custom_ref_genomes.config` is loaded) or iGenomes, use this parameter to give the ID/label for the reference. This is then used to build the full paths for all required reference genome files e.g. `--genome GRCh38`.  |
 | `igenomes_ignore` | type: boolean, default: true, Do not load `igenomes.config` when running the pipeline. You may choose this option if you observe clashes between custom parameters and those supplied in `igenomes.config` |
 | `igenomes_base` | type: directory-path, default: "s3://ngi-igenomes/igenomes/", The base path to the igenomes reference files, ignored when `--igenomes-ignore` is enabled |
-| `custom_genome_base` | type: directory-path, default: true, The base path to the custom genome reference files (REQUIRED IF `--use_custom_genome true` AND if used to build the full path in the reference genome profile in [conf/custom_ref_genomes.config](conf/custom_ref_genomes.config)) |
+| `custom_genome_base` | type: directory-path, default: null, The base path to the custom genome reference files (REQUIRED IF `--use_custom_genome true` AND if used to build the full path in the reference genome profile in [conf/custom_ref_genomes.config](conf/custom_ref_genomes.config)) |
 
 There are two ways to set up the REFERENCE GENOME REQUIRED PARAMS,
 
@@ -97,7 +97,7 @@ nextflow run /path/to/SangerSomaticMutation/main.nf \
 
 2. Set up a custom reference genome profile
 
-Edit the [conf/custom_ref_genomes.config](conf/custom_ref_genomes/config) file (eg by fill in the `your_genome_label` section). "your_genome_label" is the name of the genome profile that you want to set up, specified by `--genome your_genome_label`. For each item under "your_genome_label", you can specify the path to the right file or directory. If they are all under one parent directory, you can use the `--custom_genome_base` parameter to build the full path (like in "GRCh38_full_analysis_set_plus_decoy_hla")
+Edit the [conf/custom_ref_genomes.config](../conf/custom_ref_genomes/config) file (eg by fill in the `your_genome_label` section). "your_genome_label" is the name of the genome profile that you want to set up, specified by `--genome your_genome_label`. For each item under "your_genome_label", you can specify the path to the right file or directory. If they are all under one parent directory, you can use the `--custom_genome_base` parameter to build the full path (like in "GRCh38_full_analysis_set_plus_decoy_hla")
 
 You can then run the pipeline like this
 
@@ -169,7 +169,7 @@ Do not use `-c <file>` to specify parameters as this will result in errors. Cust
 The above pipeline run specified with a params file in yaml format:
 
 ```bash
-nextflow run nf-core/sangersomatic -profile docker -params-file params.yaml
+nextflow run sangersomatic -profile docker -params-file params.yaml
 ```
 
 with:
@@ -177,7 +177,7 @@ with:
 ```yaml title="params.yaml"
 input: './samplesheet.csv'
 outdir: './results/'
-genome: 'GRCh37'
+genome: 'GRCh38'
 <...>
 ```
 
@@ -191,7 +191,7 @@ cd /path/to/SangerSomaticMutation/dir
 git pull
 ```
 
-### Reproducibility
+<!-- ### Reproducibility
 
 It is a good idea to specify a pipeline version when running the pipeline on your data. This ensures that a specific version of the pipeline code and software are used when you run your pipeline. If you keep using the same tag, you'll be running the same version of the pipeline, even if there have been changes to the code since.
 
@@ -199,7 +199,7 @@ First, go to the [nf-core/sangersomatic releases page](https://github.com/nf-cor
 
 This version number will be logged in reports when you run the pipeline, so that you'll know what you used when you look back in the future. For example, at the bottom of the MultiQC reports.
 
-To further assist in reproducbility, you can use share and re-use [parameter files](#running-the-pipeline) to repeat pipeline runs with the same settings without having to write out a command with every single parameter.
+To further assist in reproducbility, you can use share and re-use [parameter files](#running-the-pipeline) to repeat pipeline runs with the same settings without having to write out a command with every single parameter. -->
 
 :::tip
 If you wish to share such profile (such as upload as supplementary material for academic publications), make sure to NOT include cluster specific paths to files, nor institutional specific profiles.
@@ -295,11 +295,4 @@ The Nextflow `-bg` flag launches Nextflow in the background, detached from your 
 Alternatively, you can use `screen` / `tmux` or similar tool to create a detached session which you can log back into at a later time.
 Some HPC setups also allow you to run nextflow within a cluster job submitted your job scheduler (from where it submits more jobs).
 
-## Nextflow memory requirements
 
-In some cases, the Nextflow Java virtual machines can start to request a large amount of memory.
-We recommend adding the following line to your environment to limit this (typically in `~/.bashrc` or `~./bash_profile`):
-
-```bash
-NXF_OPTS='-Xms1g -Xmx4g'
-```

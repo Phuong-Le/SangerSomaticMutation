@@ -1,5 +1,6 @@
 process cavemanFlagging {
     label 'caveman'
+    label 'process_low'
 
     publishDir "${params.outdir}/caveman_flagging_out/${meta.sample_id}", mode: params.publish_dir_mode
 

@@ -22,10 +22,11 @@ process cavemanEstep {
 
     script:
     """
-    mkdir -p ${splitlist_entry.chrom}
+    rm -rf ${splitlist_entry.chrom} estep_out
+    mkdir ${splitlist_entry.chrom}
     mv ${covs} ${splitlist_entry.chrom}
     caveman estep -i ${index} --config-file ${caveman_config} --normal-contamination ${normal_contamination} --species ${species} --species-assembly ${species_assembly} --normal-protocol ${normal_protocol} --tumour-protocol ${tumour_protocol} --normal-copy-number ${normal_cn} --tumour-copy-number ${tumour_cn} --prior-mut-probability ${prior_mut_probability} --prior-snp-probability ${prior_snp_probability}
-    mkdir -p estep_out
+    mkdir estep_out
     mv ${splitlist_entry.chrom} estep_out
 
     rm -f ${readpos} ${splitlist} ${bam} ${bai} ${bam_match} ${bai_match} ${sample_cn_file} ${match_cn_file} ${alg_bean} ${caveman_config} ${covs_arr} ${probs_arr} ${fasta} ${filtered_fai} ${genome_gap}

@@ -1,9 +1,9 @@
-<h1>
+<!-- <h1>
   <picture>
     <source media="(prefers-color-scheme: dark)" srcset="docs/images/nf-core-sangersomatic_logo_dark.png">
     <img alt="nf-core/sangersomatic" src="docs/images/nf-core-sangersomatic_logo_light.png">
   </picture>
-</h1>
+</h1> -->
 
 <!-- [![GitHub Actions CI Status](https://github.com/nf-core/sangersomatic/actions/workflows/ci.yml/badge.svg)](https://github.com/nf-core/sangersomatic/actions/workflows/ci.yml)
 [![GitHub Actions Linting Status](https://github.com/nf-core/sangersomatic/actions/workflows/linting.yml/badge.svg)](https://github.com/nf-core/sangersomatic/actions/workflows/linting.yml)[![AWS CI](https://img.shields.io/badge/CI%20tests-full%20size-FF9900?labelColor=000000&logo=Amazon%20AWS)](https://nf-co.re/sangersomatic/results)[![Cite with Zenodo](http://img.shields.io/badge/DOI-10.5281/zenodo.XXXXXXX-1073c8?labelColor=000000)](https://doi.org/10.5281/zenodo.XXXXXXX)
@@ -19,7 +19,7 @@
 
 ## Introduction
 
-**nf-core/sangersomatic** is a bioinformatics pipeline that calls somatic mutations from bam files, using CaVEMan to call SNVs and Pindel to call Indels
+**nf-core/sangersomatic** is a bioinformatics pipeline that calls somatic mutations from BAM files, using CaVEMan to call SNVs and Pindel to call Indels
 
 <!-- TODO nf-core:
    Complete this sentence with a 2-3 sentence summary of what types of data the pipeline ingests, a brief overview of the
@@ -137,14 +137,14 @@ The following required parameters can be specified either directly via the `next
 
 Sanger users can run the pipeline as follows. Please refer to [docs/sanger.md](docs/sanger.md) to ensure you have the right set up.
 
-```
+```bash
 module load cellgen/nextflow/24.10.2
 module load ISG/singularity/3.11.4
 
 outdir=/path/to/outdir
 mkdir -p $outdir
 script=/path/to/SangerSomaticMutation/main.nf # should be part of this pipeline
-config_file=/path/to/sanger_lsf.config # should be part of this pipeline
+config_file=/path/to/SangerSomaticMutation/sanger_lsf.config # should be part of this pipeline
 samplesheet=/path/to/samplesheet.tsv # or .csv, format should be consistent with extension
 species=Human # please refer to docs/usage.md
 species_assembly=GRCh38 # please refer to docs/usage.md
@@ -159,7 +159,7 @@ bsub -cwd $outdir -q week -o %J.o -e %J.e -R'span[hosts=1] select[mem>10000] rus
 
 ## Pipeline output
 
-To see the results of an example test run with a full size dataset refer to the [results](https://nf-co.re/sangersomatic/results) tab on the nf-core website pipeline page.
+<!-- To see the results of an example test run with a full size dataset refer to the [results](https://nf-co.re/sangersomatic/results) tab on the nf-core website pipeline page. -->
 For more details about the output files and reports, please refer to the
 [output documentation](https://nf-co.re/sangersomatic/output).
 
