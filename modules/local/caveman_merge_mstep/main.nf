@@ -6,20 +6,15 @@ process cavemanMergeMstep {
     publishDir "${params.outdir}/caveman_out/${meta.sample_id}", pattern: 'probs_arr', mode: params.publish_dir_mode
 
     input:
-    tuple val(meta), path("mstep_out*"), path(alg_bean), path(caveman_config), path(readpos), path(splitlist)
+    tuple val(meta), val(chrom), path(chrom_dir), path(alg_bean), path(caveman_config), path(readpos), path(splitlist)
 
     output:
-    tuple val(meta), path('covs_arr'), path('probs_arr'), path('mstep_all')
+    tuple val(meta), path('covs_arr'), path('probs_arr')
 
     script:
     """
-    rm -rf mstep_all
-    mkdir mstep_all
-    cp -R mstep_out*/* mstep_all
-    ln -sf mstep_all/* .
     caveman merge -f ${caveman_config}
-
-    caveman_merge_mstep_cleanup.sh
     rm -f ${alg_bean} ${caveman_config} ${readpos} ${splitlist}
+    rm -rf ${chrom_dir}
     """
 }

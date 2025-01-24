@@ -1,4 +1,4 @@
-# nf-core/sangersomatic: Output
+# sangersomatic: Output
 
 ## Introduction
 
@@ -41,7 +41,7 @@ The pipeline is built using [Nextflow](https://www.nextflow.io/) and processes d
 <summary>Output files</summary>
 
 - `pindel_out/`
-  - `sample_id/`
+  - `${sample_id}/`
     - `${sample_id}_vs_${match_normal_id}_mt.bam`: bam file for `sample_id`
     - `${sample_id}_vs_${match_normal_id}_mt.bam.bai`: bam index file for `sample_id`
     - `${sample_id}_vs_${match_normal_id}_wt.bam`: bam file for `match_normal_id`

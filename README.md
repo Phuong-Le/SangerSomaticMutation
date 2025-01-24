@@ -19,7 +19,7 @@
 
 ## Introduction
 
-**nf-core/sangersomatic** is a bioinformatics pipeline that calls somatic mutations from BAM files, using CaVEMan to call SNVs and Pindel to call Indels
+**sangersomatic** is a bioinformatics pipeline that calls somatic mutations from BAM files, using CaVEMan to call SNVs and Pindel to call Indels
 
 <!-- TODO nf-core:
    Complete this sentence with a 2-3 sentence summary of what types of data the pipeline ingests, a brief overview of the
@@ -95,7 +95,7 @@ Please find the detailed instructions to run the pipeline, including the input p
 
 nextflow run /path/to/SangerSomaticMutation/main.nf \
    -profile <docker/singularity/.../institute> \
-   --input /path/to/samplesheet.csv \
+   --input /path/to/samplesheet.tsv \
    --species Human \
    --species_assembly GRCh38 \
    --use_custom_genome true \ # see notes below
@@ -161,7 +161,7 @@ bsub -cwd $outdir -q week -o %J.o -e %J.e -R'span[hosts=1] select[mem>10000] rus
 
 <!-- To see the results of an example test run with a full size dataset refer to the [results](https://nf-co.re/sangersomatic/results) tab on the nf-core website pipeline page. -->
 For more details about the output files and reports, please refer to the
-[output documentation](https://nf-co.re/sangersomatic/output).
+[output documentation](docs/output.md).
 
 ## Credits
 

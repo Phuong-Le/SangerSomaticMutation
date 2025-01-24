@@ -85,7 +85,7 @@ There are two ways to set up the REFERENCE GENOME REQUIRED PARAMS,
 ```bash
 
 nextflow run /path/to/SangerSomaticMutation/main.nf \
-  --input ./samplesheet.csv \
+  --input ./samplesheet.tsv \
   --outdir /path/to/outdir \
   --species Human \
   --species_assembly GRCh38 \
@@ -105,7 +105,7 @@ You can then run the pipeline like this
 
 nextflow run /path/to/SangerSomaticMutation/main.nf \
    -profile <docker/singularity/.../institute> \
-   --input /path/to/samplesheet.csv \
+   --input /path/to/samplesheet.tsv \
    --species Human \
    --species_assembly GRCh38 \
    --use_custom_genome true \
@@ -119,7 +119,7 @@ or like this if there's a `custom_genome_base` required
 
 nextflow run /path/to/SangerSomaticMutation/main.nf \
    -profile <docker/singularity/.../institute> \
-   --input /path/to/samplesheet.csv \
+   --input /path/to/samplesheet.tsv \
    --species Human \
    --species_assembly GRCh38 \
    --use_custom_genome true \
@@ -137,7 +137,7 @@ You can specify a `-profile`  option as follows
 
 nextflow run /path/to/SangerSomaticMutation/main.nf \
    -profile <docker/singularity/.../institute> \
-   --input /path/to/samplesheet.csv \
+   --input /path/to/samplesheet.tsv \
    --species Human \
    --species_assembly GRCh38 \
    --use_custom_genome true \
@@ -169,13 +169,13 @@ Do not use `-c <file>` to specify parameters as this will result in errors. Cust
 The above pipeline run specified with a params file in yaml format:
 
 ```bash
-nextflow run sangersomatic -profile docker -params-file params.yaml
+nextflow run /path/to/sangersomatic/main.nf -profile docker -params-file params.yaml
 ```
 
 with:
 
 ```yaml title="params.yaml"
-input: './samplesheet.csv'
+input: './samplesheet.tsv'
 outdir: './results/'
 genome: 'GRCh38'
 <...>

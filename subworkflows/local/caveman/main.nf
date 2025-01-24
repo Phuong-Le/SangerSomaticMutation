@@ -67,9 +67,15 @@ workflow CAVEMAN {
             .splitCsv(header:['chrom', 'starts', 'ends'], sep: '\t')
             .withIndex(1)*.reverse()
             .collect{
-                tuple(meta, *it, readpos.find{ filename ->  filename.name =~ /readpos\.${it[1].chrom}$/ }, splitlist )
+                tuple(meta, it[1].chrom, it[0], it[1], readpos.find{ filename ->  filename.name =~ /readpos\.${it[1].chrom}$/ }, splitlist )
             }
         }
+        .groupTuple( by: [0,1] )
+        .map {
+            meta, chrom, indices, entry, readpos, splitlist ->
+            tuple(meta, chrom, indices, entry, readpos[0], splitlist[0])
+        }
+
 
     cavemanMstep(
         splitlist_ch
@@ -92,21 +98,16 @@ workflow CAVEMAN {
         )
     )
 
+
     cavemanEstep(
         splitlist_ch
         .combine(
-            ch_samplesheet
-            .join(
-                cavemanSetup.out
-                .join(cavemanMergeMstep.out)),
-            by:0
+            cavemanMstep.out,
+            by: [0, 1]
         )
-        .map {
-            meta, index, splitlist_entry, readpos, splitlist, bam, bai, bam_match, bai_match, sample_cn_file, match_cn_file, alg_bean, caveman_config, covs_arr, probs_arr, mstep_all
-            -> tuple(
-                meta, index, splitlist_entry, readpos, splitlist, bam, bai, bam_match, bai_match, sample_cn_file, match_cn_file, alg_bean, caveman_config, covs_arr, probs_arr, file("${mstep_all}/${splitlist_entry.chrom}/${splitlist_entry.starts}_${splitlist_entry.ends}.covs")
-            )
-        },
+        .combine(ch_samplesheet, by: 0)
+        .combine(cavemanSetup.out, by : 0)
+        .combine(cavemanMergeMstep.out, by: 0),
         fasta,
         filterGenomeIndex.out,
         genome_gap,

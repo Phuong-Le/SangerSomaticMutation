@@ -1,6 +1,6 @@
 process cavemanSplit {
     label 'caveman'
-    label 'process_tiny'
+    label 'process_small'
 
     input:
     tuple val(index), val(meta), path(bam), path(bai), path(bam_match), path(bai_match), path(sample_cn_file, stageAs: 'sample.cn.bed'), path(match_cn_file, stageAs: 'match.cn.bed'), path(alg_bean), path(caveman_config)

@@ -1,6 +1,6 @@
 process cavemanAddIDS {
     label 'caveman'
-    label 'process_tiny'
+    label 'process_small'
 
     publishDir "${params.outdir}/caveman_out/${meta.sample_id}", mode: params.publish_dir_mode
 

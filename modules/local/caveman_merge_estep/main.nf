@@ -1,11 +1,11 @@
 process cavemanMergeEstep {
     label 'caveman'
-    label 'process_tiny'
+    label 'process_small'
 
     publishDir "${params.outdir}/caveman_out/${meta.sample_id}", mode: params.publish_dir_mode
 
     input:
-    tuple val(meta), path("estep_out*"), path(alg_bean), path(caveman_config), path(readpos), path(splitlist)
+    tuple val(meta), path(chrom), path(alg_bean), path(caveman_config), path(readpos), path(splitlist)
 
 
     output:
@@ -17,17 +17,13 @@ process cavemanMergeEstep {
     bedgz = "${meta.sample_id}_vs_${meta.match_normal_id}.caveman.no_analysis.bed.gz"
     bedgz_tbi = "${meta.sample_id}_vs_${meta.match_normal_id}.caveman.no_analysis.bed.gz.tbi"
     """
-    rm -rf estep_all
-    mkdir estep_all
-    cp -R estep_out*/* estep_all
-    mergeCavemanResults --splitList ${splitlist} -o ${mutvcf} -f estep_all/%/%.muts.vcf.gz
-    mergeCavemanResults --splitList ${splitlist} -o ${snpvcf} -f estep_all/%/%.snps.vcf.gz
-    mergeCavemanResults --splitList ${splitlist} -o ${meta.sample_id}_vs_${meta.match_normal_id}.caveman.no_analysis.bed -f estep_all/%/%.no_analysis.bed
+    mergeCavemanResults --splitList ${splitlist} -o ${mutvcf} -f ./%/%.muts.vcf.gz
+    mergeCavemanResults --splitList ${splitlist} -o ${snpvcf} -f ./%/%.snps.vcf.gz
+    mergeCavemanResults --splitList ${splitlist} -o ${meta.sample_id}_vs_${meta.match_normal_id}.caveman.no_analysis.bed -f ./%/%.no_analysis.bed
     bgzip ${meta.sample_id}_vs_${meta.match_normal_id}.caveman.no_analysis.bed
     tabix -p bed ${bedgz}
 
-    rm -rf estep_out*
-    rm -rf estep_all
     rm -f ${alg_bean} ${caveman_config} ${readpos} ${splitlist}
+    rm -rf ${chrom}
     """
-}
+    }
